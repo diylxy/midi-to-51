@@ -1,0 +1,112 @@
+C51 COMPILER V9.56.0.0   MAIN                                                              02/03/2021 16:17:47 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          //µ¥Æ¬»úÐÍºÅ£ºSTC15w104
+   2          //¾§ÕñÆµÂÊ£º12MHz
+   3          //Èç¹û¸ü»»ÐÍºÅ»ò¾§ÕñÆµÂÊ²»Í¬ÇëÓÃstcispÖØÐÂÉú³ÉDelay40msº¯Êý
+   4          //Èç¹ûÐÞ¸ÄÁË¾§ÕñÆµÂÊÇëÐÞ¸Äfreq2timer.pyµÚÒ»ÐÐ¶¨ÒåµÄ¾§ÕñÆµÂÊ(µ¥Î»£ºHz)²¢Ö´ÐÐ£¬È»ºó°ÑÉú³ÉµÄtone.hÎÄ¼þ¸´ÖÆµ½k
+             -eilÎÄ¼þ¼Ð
+   5          #include <STC89C5xRC.H>
+   6          #include "beep.h"
+   7          #include "tone.h"
+   8          
+   9          sbit BEEP = P3^5;                         //Êä³ö¶Ë¿Ú,¶ÔÓ¦T0CLKO£¬·ÀÖ¹·äÃùÆ÷¹Ø±ÕºóÏûºÄµçÁ÷
+  10          sfr WAKE_CLKO = 0x8f;               //wakeup and clock output control register
+  11          unsigned int t0tmp;
+  12          #define beep(tone) TL0 = tonetofreq[tone];TH0 = tonetofreq[tone] >>8
+  13          
+  14          void Delay40ms(unsigned char tm)    //@12.000MHz STC15w104£¬STCISPÉú³ÉµÄÖ»ÄÜÑÓÊ±¹Ì¶¨Ê±¼ä£¬ÐèÒªÔö¼ÓÒ»¸öwhileÑ
+             -­»·
+  15          {
+  16   1        ++tm;
+  17   1        while(--tm)
+  18   1        {
+  19   2          unsigned char i, j, k;
+  20   2      
+  21   2        i = 2;
+  22   2        j = 211;
+  23   2        k = 231;
+  24   2        do
+  25   2        {
+  26   3          do
+  27   3          {
+  28   4            while (--k);
+  29   4          } while (--j);
+  30   3        } while (--i);
+  31   2        }
+  32   1      }
+  33          
+  34          void play(unsigned char *table)
+  35          {
+  36   1        unsigned int pos = 0;
+  37   1        while(1)
+  38   1        {
+  39   2          BEEP = 0;
+  40   2          if(table[pos] == 'B')
+  41   2          {
+  42   3            TR0 = 1;
+  43   3            beep(table[pos+1]);
+  44   3            Delay40ms(table[pos+2]);
+  45   3            TR0 = 0;
+  46   3            BEEP = 0;
+  47   3            BEEP = 0;
+  48   3            BEEP = 0;
+  49   3            pos += 3;
+  50   3            
+  51   3          }
+  52   2          else if(table[pos] == 'S')
+  53   2          {
+C51 COMPILER V9.56.0.0   MAIN                                                              02/03/2021 16:17:47 PAGE 2   
+
+  54   3            TR0 = 0;
+  55   3            BEEP = 0;
+  56   3            BEEP = 0;
+  57   3            BEEP = 0;
+  58   3            Delay40ms(table[pos+1]);
+  59   3            pos += 2;
+  60   3            BEEP = 0;
+  61   3            BEEP = 0;
+  62   3            BEEP = 0;
+  63   3          }
+  64   2          else if(table[pos] == 'T')
+  65   2          {
+  66   3            TR0 = 0;
+  67   3            BEEP = 0;
+  68   3            BEEP = 0;
+  69   3            BEEP = 0;
+  70   3            return;
+  71   3          }
+  72   2          else return;
+  73   2        }
+  74   1      }
+  75          
+  76          void main()
+  77          {
+  78   1        AUXR &= 0x7F;   //¶¨Ê±Æ÷Ê±ÖÓ12TÄ£Ê½
+  79   1        TMOD = 0;
+  80   1        TR0 = 0;
+  81   1        WAKE_CLKO = 0x01;               //enable timer0 clock output
+  82   1        EA = 1;
+  83   1        play(beeptable);
+  84   1        while(1);
+  85   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    218    ----
+   CONSTANT SIZE    =   2159    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
