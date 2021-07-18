@@ -5,6 +5,15 @@ https://www.bilibili.com/video/BV1fh411k7oW#reply4052668545
 
 需要安装python3，可能需要某个版本的.net运行库
 
+还是不行就试试管理员下运行：
+
+```
+pip install argparse csv
+```
+
+或者把错误信息发在issue里
+
+
 ## 使用方法：
 
 把midi文件拖到midi_to_51.bat上，然后把生成的beep.h拖到keil文件夹中，替换里面的文件，确认一下单片机型号正确，具体可以看main.c注释，编译keil工程，烧录到单片机。
